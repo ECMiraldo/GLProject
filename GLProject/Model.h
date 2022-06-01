@@ -124,8 +124,8 @@ class Model
 		//	std::cout  << normals[i].x << "\t" << normals[i].y << "\t" << normals[i].z << std::endl;
 		//}
 
-		return true;
-		fclose(file);
 		
+		fclose(file);
+		return true;
 
 	}
