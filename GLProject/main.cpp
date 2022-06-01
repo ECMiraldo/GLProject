@@ -5,6 +5,7 @@
 #include <vector>
 #include <gl/GL.h>
 #include <iostream>
+#include "Model.h"
 
 #pragma comment(lib, "glew32s.lib")
 #pragma comment(lib, "glfw3.lib")
@@ -17,6 +18,7 @@
 void Init(void) {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glEnable(GL_DEPTH_TEST);
+	
 	// Descomentar para ativar o Face Culling
 	//glEnable(GL_CULL_FACE);
 }
@@ -71,6 +73,7 @@ int main(void) {
 	if (!glfwInit()) return -1;
 
 	window = glfwCreateWindow(800, 600, "My 1st P3D Project", NULL, NULL);
+	Model model = Model("Iron_Man.obj");
 
 	if (!window) {
 		glfwTerminate();
@@ -81,45 +84,12 @@ int main(void) {
 	glewInit();
 
 
-	GLfloat positions[] = {
-		-0.5f, 0.5f //1 //6
-		- 0.5f, -0.8f, //2
-		0.5f, -0.8f, //3, 4
-		0.5f, 0.5f, //5
-	};
-
-	//get buffer names
-	unsigned int  buffer;
-	glGenBuffers(1, &buffer);
-	//bindBuffer
-	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	//9 vertices necessarios
-	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(GLfloat), positions, GL_STATIC_DRAW);
-
-	unsigned int indices[] = {
-		0, 1, 2,
-		2, 3, 0
-
-	};
-
-	//get buffer names
-	unsigned int ebo;
-	glGenBuffers(1, &ebo);
-	//bindBuffer
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	//9 vertices necessarios
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
 
-	glEnableVertexAttribArray(ebo);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
-
-
-	unsigned int Shader = CreateShader()
 
 	while (!glfwWindowShouldClose(window)) {
 		
-		glDrawElements(GL_TRIANGLES, 2, GL_UNSIGNED_INT, nullptr);
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
