@@ -6,6 +6,7 @@
 #include <gl/GL.h>
 #include <iostream>
 #include "Model.h"
+#include "Camera.h"
 
 #pragma comment(lib, "glew32s.lib")
 #pragma comment(lib, "glfw3.lib")
@@ -20,7 +21,7 @@ void Init(void) {
 	glEnable(GL_DEPTH_TEST);
 	
 	// Descomentar para ativar o Face Culling
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 }
 
 static unsigned int CompileShader(unsigned int type, const std::string& source) {
@@ -72,18 +73,22 @@ int main(void) {
 
 	if (!glfwInit()) return -1;
 
-	window = glfwCreateWindow(800, 600, "My 1st P3D Project", NULL, NULL);
+	window = glfwCreateWindow(800, 600, "Iron_Man", NULL, NULL);
 	Model model = Model("Iron_Man.obj");
+	Camera camera = Camera(60.0f, WIDTH, HEIGHT, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -10.0f));
+
 
 	if (!window) {
 		glfwTerminate();
 		return -1;
 	}
+
+
 	glfwMakeContextCurrent(window);
 	Init();
 	glewInit();
 
-
+	//glfwSetScrollCallback(window, camera.scrollCallback);
 
 
 
