@@ -13,12 +13,12 @@
 #pragma comment(lib, "opengl32.lib")
 
 
-void Model::Display(glm::mat4 mvp) {
+void Model::Display(glm::mat4 projection, glm::mat4 view) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//float* vertex_stream = static_cast<float*>(glm::value_ptr(obj.front()));
 
-
+		glm::mat4 mvp = matrix * projection * view;
 		//	glm::vec4 vertex = glm::vec4(vertex_stream[nv], vertex_stream[nv + 1], vertex_stream[nv + 2], 1.0f);
 		//	// Cálculo das coordenadas de recorte
 		//	glm::vec4 transformed_vertex = mvp * vertex;

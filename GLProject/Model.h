@@ -22,7 +22,7 @@ class Model
 		float position;
 		glm::mat4 matrix;
 		Model(const char* filename);
-		void Display(glm::mat4 mvp);
+		void Display(glm::mat4 projection, glm::mat4 view);
 	private:
 		char materialsFilename[50];
 		std::vector < glm::vec3 > vertices;
@@ -32,6 +32,7 @@ class Model
 	;
 };
 	inline Model::Model(const char* filename) {
+		matrix = glm::mat4(1.0f);
 		ReadFiles(filename);
 	}
 
