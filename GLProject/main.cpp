@@ -81,8 +81,7 @@ int main(void) {
 	if (!glfwInit()) return -1;
 
 	window = glfwCreateWindow(800, 600, "Iron_Man", NULL, NULL);
-	Model model = Model("Iron_Man.obj");
-	Camera camera = Camera(60.0f, WIDTH, HEIGHT, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -10.0f));
+	
 
 
 	if (!window) {
@@ -93,15 +92,19 @@ int main(void) {
 
 	glfwMakeContextCurrent(window);
 	Init();
-	glewInit();
+	glewExperimental = GL_TRUE;
+	glewInit(); 
 
+	//Precisa ser depois do glewInit para funcionar 
+	Model model = Model("Iron_Man.obj");
+	Camera camera = Camera(60.0f, WIDTH, HEIGHT, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -10.0f));
 	//glfwSetScrollCallback(window, camera.scrollCallback);
 
 
 
 	while (!glfwWindowShouldClose(window)) {
-		
-
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		model.Display(glm::vec3(0, 2, 5), glm::vec3(0, 2, 0));
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

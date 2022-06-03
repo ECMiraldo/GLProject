@@ -7,31 +7,81 @@
 #include <iostream>
 #include "Model.h"
 #include <math.h>
+#include "LoadShaders.h"
 
 #pragma comment(lib, "glew32s.lib")
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "opengl32.lib")
 
+using namespace glm;
 
-void Model::Display(glm::mat4 projection, glm::mat4 view) {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+void Model::Display(vec3 position, vec3 orientacao) {
+	mat4 projection = glm::perspective(glm::radians(60.0f), 4.0f / 3.0f, 0.1f, 1000.0f);
+	mat4 view = glm::lookAt(vec3(0.0f, 2.0f, 5.0f), vec3(0.0f, 2.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+	mat4 mvp = matrix * projection * view;
 
-		//float* vertex_stream = static_cast<float*>(glm::value_ptr(obj.front()));
+	glBindVertexArray(vertexArrayObject);
 
-		glm::mat4 mvp = matrix * projection * view;
-		//	glm::vec4 vertex = glm::vec4(vertex_stream[nv], vertex_stream[nv + 1], vertex_stream[nv + 2], 1.0f);
-		//	// Cálculo das coordenadas de recorte
-		//	glm::vec4 transformed_vertex = mvp * vertex;
-		//	// Divisão de Perspetiva
-		//	glm::vec4 normalized_vertex = transformed_vertex / transformed_vertex.w;
-		//	// Desenho do vértice
-		//	glVertex3f(normalized_vertex.x, normalized_vertex.y, normalized_vertex.z);
-		
-		glEnd();
-	
-
+	glDrawArrays(GL_TRIANGLES, 0, vertices.size() * 3);
+	//float* vertex_stream = static_cast<float*>(glm::value_ptr(obj.front()));
+	//	glm::vec4 vertex = glm::vec4(vertex_stream[nv], vertex_stream[nv + 1], vertex_stream[nv + 2], 1.0f);
+	//	// Cálculo das coordenadas de recorte
+	//	glm::vec4 transformed_vertex = mvp * vertex;
+	//	// Divisão de Perspetiva
+	//	glm::vec4 normalized_vertex = transformed_vertex / transformed_vertex.w;
+	//	// Desenho do vértice
+	//	glVertex3f(normalized_vertex.x, normalized_vertex.y, normalized_vertex.z);
 }
 
+void Model::senddataModel() {
+
+	GLfloat vertex[9264 * 3];
+	GLfloat uvsArray[9264 * 2];
+	GLfloat normais[9264 * 3];
+	for (int i = 0; i < vertices.size(); i++) {
+		// at = vertices[i]
+		vertex[i * 3] = vertices.at(i).x;
+		vertex[i * 3 + 1] = vertices.at(i).y;
+		vertex[i * 3 + 2] = vertices.at(i).z;
+		// normais
+		normais[i * 3] = normals.at(i).x;
+		normais[i * 3 + 1] = normals.at(i).y;
+		normais[i * 3 + 2] = normals.at(i).z;
+
+		// Uvs
+		uvsArray[i * 2] = uvs.at(i).x;
+		uvsArray[i * 2 + 1] = uvs.at(i).y;
+	}
+
+	glGenVertexArrays(1, &vertexArrayObject);
+	glBindVertexArray(vertexArrayObject);
+
+	glGenBuffers(3, bufferArrayObjects);
+
+	// Send datas to buffers
+	for (int i = 0; i < 3; i++) {
+		glBindBuffer(GL_ARRAY_BUFFER, bufferArrayObjects[i]);
+
+		if (i == 0) glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), vertex, 0);
+		if (i == 1) glBufferData(GL_ARRAY_BUFFER, sizeof(uvsArray), uvsArray, 0);
+		if (i == 2) glBufferData(GL_ARRAY_BUFFER, sizeof(normais), normais, 0);
+	}
+	ShaderInfo shaders[] = {
+		{GL_VERTEX_SHADER,"VertexShader.vert"},
+		{GL_FRAGMENT_SHADER,"FragmentShader.frag"},
+		{GL_NONE,NULL},
+	};
+
+	//Shader
+	shaderProgram = LoadShaders(shaders);
+	glUseProgram(shaderProgram);
+
+	//Posição no shader (ponteiro da variavel do shader)
+	GLint vertexPositionS = glGetProgramResourceLocation(shaderProgram, GL_PROGRAM_INPUT, "vertexPositionS");
+	glVertexAttribPointer(vertexPositionS, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(vertexPositionS);
+
+}
 
 
 bool Model::ReadFiles(const char* filename) {
@@ -113,7 +163,7 @@ bool Model::ReadFiles(const char* filename) {
 		glm::vec3 normal = temp_vertices[normalIndex - 1];
 		normals.push_back(normal);
 	}
-	////
+	//
 	//for (unsigned int i = 0; i < vertexIndices.size(); i++) {
 	//	std::cout << vertices[i].x << "\t" << vertices[i].y << "\t" <<  vertices[i].z << std::endl;
 	//}
@@ -123,6 +173,7 @@ bool Model::ReadFiles(const char* filename) {
 	//for (unsigned int i = 0; i < normalIndices.size(); i++) {
 	//	std::cout  << normals[i].x << "\t" << normals[i].y << "\t" << normals[i].z << std::endl;
 	//}
+
 
 
 	fclose(file);
