@@ -35,13 +35,13 @@ class Model
 		std::vector < glm::vec2 > uvs;
 		std::vector < glm::vec3 > normals;
 		bool ReadFiles(const char* filename);
-		void senddataModel();
+		void sendModelData();
 		
 	;
 };
 	inline Model::Model(const char* filename) {
 		matrix = glm::mat4(1.0f);
 		ReadFiles(filename);
-		senddataModel();
+		sendModelData();
 	}
 
