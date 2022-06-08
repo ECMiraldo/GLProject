@@ -8,6 +8,7 @@
 #include "Model.h"
 #include <math.h>
 #include "LoadShaders.h"
+#include <glm/gtc/matrix_transform.hpp> // translate, rotate, scale, perspective, ...
 
 #pragma comment(lib, "glew32s.lib")
 #pragma comment(lib, "glfw3.lib")
@@ -15,21 +16,16 @@
 
 using namespace glm;
 
-void Model::Display(vec3 position, vec3 orientacao) {
-	mat4 projection = glm::perspective(glm::radians(60.0f), 4.0f / 3.0f, 0.1f, 1000.0f);
-	mat4 view = glm::lookAt(vec3(0.0f, 2.0f, 5.0f), vec3(0.0f, 2.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
-	mat4 mvp = matrix * projection * view;
+void Model::Display(mat4 view, mat4 projection) {
+	mat4 mvp = projection * view * matrix;
+	
 
+	glBindVertexArray(vertexArrayObject);
 
-	glDrawArrays(GL_TRIANGLES, 0, vertices.size() * 3);
-	//float* vertex_stream = static_cast<float*>(glm::value_ptr(obj.front()));
-	//	glm::vec4 vertex = glm::vec4(vertex_stream[nv], vertex_stream[nv + 1], vertex_stream[nv + 2], 1.0f);
-	//	// Cálculo das coordenadas de recorte
-	//	glm::vec4 transformed_vertex = mvp * vertex;
-	//	// Divisão de Perspetiva
-	//	glm::vec4 normalized_vertex = transformed_vertex / transformed_vertex.w;
-	//	// Desenho do vértice
-	//	glVertex3f(normalized_vertex.x, normalized_vertex.y, normalized_vertex.z);
+	// Envia comando para desenho de primitivas GL_TRIANGLES, que utilizará os dados do VAO vinculado.
+	glDrawArrays(GL_QUADS, 0, vertices.size());
+	// glDrawElements(GL_TRIANGLES, NumIndices, GL_UNSIGNED_INT, (void*)0); // ebo
+
 }
 
 
@@ -156,7 +152,7 @@ void Model::sendModelData() {
 	glGenVertexArrays(1, &vertexArrayObject);
 	glBindVertexArray(vertexArrayObject);
 	
-	glGenBuffers(3, bufferArrayObjects);
+	glGenBuffers(4, bufferArrayObjects);
 
 	// Send datas to buffers
 	for (int i = 0; i < 3; i++) {
@@ -188,28 +184,17 @@ void Model::sendModelData() {
 
 	// Ativa o VBO 'Buffers[0]'.
 	glBindBuffer(GL_ARRAY_BUFFER, bufferArrayObjects[0]);
-	// Liga a localização do atributo 'vPosition' dos shaders do 'programa', ao VBO e VAO (ativos).
-	// Aqui já é necessário ter o VAO e o VBO vinculados ao contexto do OpenGL.
-	// É neste ponto que o VBO fica associado ao VAO.
-	// Especifica também como é que a informação do atributo 'coordsId' deve ser interpretada.
-	// Neste caso, o atributo irá receber, por vértice, 2 elementos do tipo float.
-	glVertexAttribPointer(vertexPositions, 3 /*2 elementos por vértice*/, GL_FLOAT/*do tipo float*/, GL_FALSE, 0, nullptr);
+	glVertexAttribPointer(vertexPositions, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	// Ativa o VBO 'Buffers[1]'.
 	glBindBuffer(GL_ARRAY_BUFFER, bufferArrayObjects[1]);
-	// Liga a localização do atributo 'vColors' dos shaders do 'programa', ao VBO e VAO (ativos).
-	// Aqui já é necessário ter o VAO e o VBO vinculados ao contexto do OpenGL.
-	// É neste ponto que o VBO fica associado ao VAO.
-	// Especifica também como é que a informação do atributo 'coordsId' deve ser interpretada.
-	// Neste caso, o atributo irá receber, por vértice, 3 elementos do tipo float.
-	glVertexAttribPointer(uvs, 2 /*3 elementos por vértice*/, GL_FLOAT/*do tipo float*/, GL_FALSE, 0, nullptr);
+	glVertexAttribPointer(uvs, 2 , GL_FLOAT, GL_FALSE, 0, nullptr);
+
 	glBindBuffer(GL_ARRAY_BUFFER, bufferArrayObjects[2]);
-	glVertexAttribPointer(normals, 3 /*3 elementos por vértice*/, GL_FLOAT/*do tipo float*/, GL_FALSE, 0, nullptr);
-	// Habitita o atributo com localização 'coresId' para o VAO ativo.
-	// Os atributos de um VAO estão desativados por defeito.
+	glVertexAttribPointer(normals, 3 , GL_FLOAT, GL_FALSE, 0, nullptr);
+	
+
 	glEnableVertexAttribArray(vertexPositions);
-	// Habitita o atributo com localização 'coresId' para o VAO ativo.
-	// Os atributos de um VAO estão desativados por defeito.
 	glEnableVertexAttribArray(uvs);
 	glEnableVertexAttribArray(normals);
 

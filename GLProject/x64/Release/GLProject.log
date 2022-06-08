@@ -1,10 +1,11 @@
 ﻿  Model.cpp
-C:\Users\EduardoCacciariMiral\source\repos\GLProject\GLProject\Model.cpp(24,51): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\Users\EduardoCacciariMiral\source\repos\GLProject\GLProject\Model.cpp(26,43): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+  main.cpp
 LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
   Generating code
-  3 of 329 functions ( 0.9%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+  30 of 328 functions ( 9.1%) were compiled, the rest were copied from previous compilation.
+    1 functions were new in current compilation
+    2 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
 glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'C:\Users\EduardoCacciariMiral\source\repos\GLProject\x64\Release\vc120.pdb'; linking object as if no debug info
 LINK : warning LNK4286: symbol '__glewGenBuffers' defined in 'glew32s.lib(glew.obj)' is imported by 'Model.obj'

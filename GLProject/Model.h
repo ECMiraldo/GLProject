@@ -10,6 +10,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <glm/gtc/matrix_transform.hpp> // translate, rotate, scale, perspective, ...
 
 #pragma comment(lib, "glew32s.lib")
 #pragma comment(lib, "glfw3.lib")
@@ -23,13 +24,14 @@ class Model
 		float position;
 		glm::mat4 matrix;
 		Model(const char* filename);
-		void Display(glm::vec3 position, glm:: vec3 orientacao);
+		void Display(glm::mat4 view, glm:: mat4 projection);
 	private:
 		//VAO
 		GLuint vertexArrayObject;
 		GLuint bufferArrayObjects[3]; // 3 vertex, coord de textura e normais
 		GLuint shaderProgram;
 		GLuint num_vertices;
+		GLfloat ANGLE = 0.0f;
 		char materialsFilename[50];
 		std::vector < glm::vec3 > vertices;
 		std::vector < glm::vec2 > uvs;
