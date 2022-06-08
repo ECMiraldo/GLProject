@@ -20,7 +20,6 @@ void Model::Display(vec3 position, vec3 orientacao) {
 	mat4 view = glm::lookAt(vec3(0.0f, 2.0f, 5.0f), vec3(0.0f, 2.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
 	mat4 mvp = matrix * projection * view;
 
-	glBindVertexArray(vertexArrayObject);
 
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size() * 3);
 	//float* vertex_stream = static_cast<float*>(glm::value_ptr(obj.front()));
@@ -163,9 +162,9 @@ void Model::sendModelData() {
 	for (int i = 0; i < 3; i++) {
 		glBindBuffer(GL_ARRAY_BUFFER, bufferArrayObjects[i]);
 
-		if (i == 0) glBufferData(GL_ARRAY_BUFFER, sizeof(vertex) * 4, vertex, GL_STATIC_DRAW);
-		if (i == 1) glBufferData(GL_ARRAY_BUFFER, sizeof(uvsArray) * 4, uvsArray, GL_STATIC_DRAW);
-		if (i == 2) glBufferData(GL_ARRAY_BUFFER, sizeof(normais) * 4, normais, GL_STATIC_DRAW);
+		if (i == 0) glBufferStorage(GL_ARRAY_BUFFER, sizeof(vertex) , vertex, 0);
+		if (i == 1) glBufferStorage(GL_ARRAY_BUFFER, sizeof(uvsArray), uvsArray, 0);
+		if (i == 2) glBufferStorage(GL_ARRAY_BUFFER, sizeof(normais), normais, 0);
 	}													   
 	ShaderInfo shaders[] = {
 		{GL_VERTEX_SHADER,"VertexShader.vert"},
@@ -178,7 +177,40 @@ void Model::sendModelData() {
 	glUseProgram(shaderProgram);
 
 	//Posição no shader (ponteiro da variavel do shader)
-	GLint vertexPositionS = glGetProgramResourceLocation(shaderProgram, GL_PROGRAM_INPUT, "vertexPositionS");
-	glVertexAttribPointer(vertexPositionS, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	GLint vertexPositions = glGetProgramResourceLocation(shaderProgram, GL_PROGRAM_INPUT, "vertexPositions");
+	glVertexAttribPointer(vertexPositions, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	GLint uvs = glGetProgramResourceLocation(shaderProgram, GL_PROGRAM_INPUT, "uvs");
+	glVertexAttribPointer(vertexPositions, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	GLint normals = glGetProgramResourceLocation(shaderProgram, GL_PROGRAM_INPUT, "normals");
+	glVertexAttribPointer(vertexPositions, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+
+
+	// Ativa o VBO 'Buffers[0]'.
+	glBindBuffer(GL_ARRAY_BUFFER, bufferArrayObjects[0]);
+	// Liga a localização do atributo 'vPosition' dos shaders do 'programa', ao VBO e VAO (ativos).
+	// Aqui já é necessário ter o VAO e o VBO vinculados ao contexto do OpenGL.
+	// É neste ponto que o VBO fica associado ao VAO.
+	// Especifica também como é que a informação do atributo 'coordsId' deve ser interpretada.
+	// Neste caso, o atributo irá receber, por vértice, 2 elementos do tipo float.
+	glVertexAttribPointer(vertexPositions, 3 /*2 elementos por vértice*/, GL_FLOAT/*do tipo float*/, GL_FALSE, 0, nullptr);
+
+	// Ativa o VBO 'Buffers[1]'.
+	glBindBuffer(GL_ARRAY_BUFFER, bufferArrayObjects[1]);
+	// Liga a localização do atributo 'vColors' dos shaders do 'programa', ao VBO e VAO (ativos).
+	// Aqui já é necessário ter o VAO e o VBO vinculados ao contexto do OpenGL.
+	// É neste ponto que o VBO fica associado ao VAO.
+	// Especifica também como é que a informação do atributo 'coordsId' deve ser interpretada.
+	// Neste caso, o atributo irá receber, por vértice, 3 elementos do tipo float.
+	glVertexAttribPointer(uvs, 2 /*3 elementos por vértice*/, GL_FLOAT/*do tipo float*/, GL_FALSE, 0, nullptr);
+	glBindBuffer(GL_ARRAY_BUFFER, bufferArrayObjects[2]);
+	glVertexAttribPointer(normals, 3 /*3 elementos por vértice*/, GL_FLOAT/*do tipo float*/, GL_FALSE, 0, nullptr);
+	// Habitita o atributo com localização 'coresId' para o VAO ativo.
+	// Os atributos de um VAO estão desativados por defeito.
+	glEnableVertexAttribArray(vertexPositions);
+	// Habitita o atributo com localização 'coresId' para o VAO ativo.
+	// Os atributos de um VAO estão desativados por defeito.
+	glEnableVertexAttribArray(uvs);
+	glEnableVertexAttribArray(normals);
 
 }
