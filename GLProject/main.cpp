@@ -119,7 +119,9 @@ int main(void) {
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		camera.Update();
-		model.Display(camera.view, camera.projection);
+		model.Display(glm::vec3(0,0,0),glm::vec3(0,0,0));
+		model.Display(glm::vec3(-2,-1,-5),glm::vec3(0,0,0));
+		model.Display(glm::vec3(2,-1,-5),glm::vec3(0,0,0));
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

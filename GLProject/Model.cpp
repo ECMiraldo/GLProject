@@ -1,13 +1,33 @@
 #include "Model.h"
 #include "LoadShaders.h"
 #include <glm/gtc/matrix_transform.hpp> // translate, rotate, scale, perspective, ...
-
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 using namespace glm;
 
-void Model::Display(mat4 view, mat4 projection) {
-	mat4 mvp = projection * view * matrix;
+
+
+void Model::Display(vec3 position, vec3 orientation) {
+	mat4 mvp;
+	mat4 projection = perspective(radians(60.0f), 16 / 9.0f, 0.1f, 1000.0f);
+	mat4 view = lookAt(vec3(0, 2,5), vec3(0, 2, 0), vec3(0, 1, 0));
+	mat4 matrixModelo = mat4(1.0f); // matrix criada para cada modelo, isto é, precisa ser feito para que os modelos não deem spawn um em cima do outro
 	
+	matrixModelo = translate(matrixModelo,position);
+
+	//Orientation é o pitch, yaw, roll em graus
+
+	matrixModelo = rotate(matrixModelo,radians(orientation.x), vec3(1, 0, 0)); //pitch
+	matrixModelo = rotate(matrixModelo,radians(orientation.y), vec3(0, 1, 0)); //yaw
+	matrixModelo = rotate(matrixModelo,radians(orientation.z), vec3(0, 0, 1)); //roll
+
+	mvp = projection * view * matrixModelo;
+
+	GLint MVP = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "mvp");
+	//std::cout << MVP;
+	glProgramUniformMatrix4fv(shaderProgram, MVP, 1, GL_FALSE, glm::value_ptr(mvp));
+
 
 	glBindVertexArray(vertexArrayObject);
 
@@ -16,9 +36,6 @@ void Model::Display(mat4 view, mat4 projection) {
 	// glDrawElements(GL_TRIANGLES, NumIndices, GL_UNSIGNED_INT, (void*)0); // ebo
 
 }
-
-
-
 
 bool Model::ReadFiles(const char* filename) {
 	FILE* file;
@@ -41,6 +58,7 @@ bool Model::ReadFiles(const char* filename) {
 			break;
 		if (strcmp(lineHeader, "mtllib") == 0) {
 			fscanf_s(file, "%s\n", materialsFilename, (unsigned int)_countof(materialsFilename));
+			ReadMaterial(materialsFilename);
 		}
 
 		if (strcmp(lineHeader, "v") == 0) {
@@ -69,52 +87,101 @@ bool Model::ReadFiles(const char* filename) {
 				throw("Failed to read face information\n");
 				return false;
 			}
-			vertexIndices.push_back(vertexIndex[0]);
-			vertexIndices.push_back(vertexIndex[1]);
-			vertexIndices.push_back(vertexIndex[2]);
-			uvIndices.push_back(uvIndex[0]);
-			uvIndices.push_back(uvIndex[1]);
-			uvIndices.push_back(uvIndex[2]);
-			normalIndices.push_back(normalIndex[0]);
-			normalIndices.push_back(normalIndex[1]);
-			normalIndices.push_back(normalIndex[2]);
+
+			for (int i = 0; i < 3; i++)
+			{
+				vertices.push_back(temp_vertices.at(vertexIndex[i]-1));
+				uvs.push_back(temp_uvs.at(uvIndex[i]-1));
+				normals.push_back(temp_normals.at(normalIndex[i]-1));
+			}
+
 		};
 	}
-	//prints
+	fclose(file);
+	return true;
+}
 
+bool Model::ReadMaterial(const char* filename) {
+	FILE* file;
+	errno_t err;
+	err = fopen_s(&file, filename, "r");
 
-	// For each vertex of each triangle
-	for (unsigned int i = 0; i < vertexIndices.size(); i++) {
-		unsigned int vertexIndex = vertexIndices[i];
-		glm::vec3 vertex = temp_vertices[vertexIndex - 1];
-		vertices.push_back(vertex);
+	if (file == NULL) {
+
+		throw("Num abriu !\n");
+		return false;
 	}
-	for (unsigned int i = 0; i < uvIndices.size(); i++) {
-		unsigned int uvIndex = uvIndices[i];
-		glm::vec2 uv = temp_vertices[uvIndex - 1];
-		uvs.push_back(uv);
-	}
-	for (unsigned int i = 0; i < normalIndices.size(); i++) {
-		unsigned int normalIndex = normalIndices[i];
-		glm::vec3 normal = temp_vertices[normalIndex - 1];
-		normals.push_back(normal);
-	}
-	//
-	//for (unsigned int i = 0; i < vertexIndices.size(); i++) {
-	//	std::cout << vertices[i].x << "\t" << vertices[i].y << "\t" <<  vertices[i].z << std::endl;
-	//}
-	//for (unsigned int i = 0; i < uvIndices.size(); i++) {
-	//	std::cout  << uvs[i].x << "\t" << uvs[i].y << std::endl;
-	//}
-	//for (unsigned int i = 0; i < normalIndices.size(); i++) {
-	//	std::cout  << normals[i].x << "\t" << normals[i].y << "\t" << normals[i].z << std::endl;
-	//}
+	while (1) {
+		char lineHeader[128];
+		int res = fscanf_s(file, "%s", lineHeader, (unsigned int)_countof(lineHeader));
+		if (res == EOF)
+			break;
+		if (strcmp(lineHeader, "Ka") == 0) {
+			fscanf_s(file, "%f %f %f\n", &ka.x, &ka.y, &ka.z);
+			
+		}
+		if (strcmp(lineHeader, "Kd") == 0) {
+			fscanf_s(file, "%f %f %f\n", &kd.x, &kd.y, &kd.z);
+			
+		}
+		if (strcmp(lineHeader, "Ks") == 0) {
+			fscanf_s(file, "%f %f %f\n", &ks.x, &ks.y, &ks.z);
+		}
+		if (strcmp(lineHeader, "Ns") == 0) {
+			fscanf_s(file, "%f\n", &ns);
+		}
 
-
+		if (strcmp(lineHeader, "map_Kd") == 0) {
+			char path_image[100];
+			fscanf_s(file, "%s\n", path_image, (unsigned int)_countof(path_image));
+			load_texture(path_image);
+		}
+	}
 
 	fclose(file);
 	return true;
+}
 
+void Model::load_texture(const char* filename) {
+	GLuint textureName = 0;
+
+	// Gera um nome de textura
+	glGenTextures(1, &textureName);
+
+	// Ativa a Unidade de Textura #0
+	// A Unidade de Textura 0 já está ativa por defeito.
+	// Só uma Unidade de Textura está ativa a cada momento.
+	glActiveTexture(GL_TEXTURE0);
+
+	// Vincula esse nome de textura ao target GL_TEXTURE_2D da Unidade de Textura ativa.
+	glBindTexture(GL_TEXTURE_2D, textureName);
+
+	// Define os parâmetros de filtragem (wrapping e ajuste de tamanho)
+	// para a textura que está vinculada ao target GL_TEXTURE_2D da Unidade de Textura ativa.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	// Leitura/descompressão do ficheiro com imagem de textura
+	int width, height, nChannels;
+	// Ativa a inversão vertical da imagem, aquando da sua leitura para memória.
+	stbi_set_flip_vertically_on_load(true);
+	// Leitura da imagem para memória do CPU
+	unsigned char* imageData = stbi_load(filename, &width, &height, &nChannels, 0);
+	if (imageData) {
+		// Carrega os dados da imagem para o Objeto de Textura vinculado ao target GL_TEXTURE_2D da Unidade de Textura ativa.
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, nChannels == 4 ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, imageData);
+
+		// Gera o Mipmap para essa textura
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		// Liberta a imagem da memória do CPU
+		stbi_image_free(imageData);
+	}
+	else {
+		std::cout << "Error loading texture!" << std::endl;
+	}
 }
 
 
@@ -137,7 +204,7 @@ void Model::sendModelData() {
 		uvsArray[i * 2] = uvs.at(i).x;
 		uvsArray[i * 2 + 1] = uvs.at(i).y;
 	}
-
+	
 	glGenVertexArrays(1, &vertexArrayObject);
 	glBindVertexArray(vertexArrayObject);
 	
@@ -181,5 +248,11 @@ void Model::sendModelData() {
 	glEnableVertexAttribArray(vertexPositions);
 	glEnableVertexAttribArray(uvs);
 	glEnableVertexAttribArray(normals);
+
+	//Textura
+
+	GLint textura = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "textura");
+	glProgramUniform1i(shaderProgram, textura, 0);
+
 
 }

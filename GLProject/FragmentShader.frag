@@ -2,7 +2,12 @@
 
 #version 440 core
 layout (location = 0) out vec4 FragColor;
+
+in vec2 uv;
+uniform sampler2D textura;
+
+
 void main()
 {
-  FragColor = vec4(0,1,0,1);
+  FragColor = texture(textura,uv);
 }

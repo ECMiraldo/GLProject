@@ -24,18 +24,24 @@ class Model
 		float position;
 		glm::mat4 matrix;
 		Model(const char* filename);
-		void Display(glm::mat4 view, glm:: mat4 projection);
+		void Display(glm::vec3 position,glm::vec3 orientation);
 	private:
 		//VAO
 		GLuint vertexArrayObject;
 		GLuint bufferArrayObjects[3]; // 3 vertex, coord de textura e normais
 		GLuint shaderProgram;
 		GLuint num_vertices;
+		
 		char materialsFilename[50];
 		std::vector < glm::vec3 > vertices;
 		std::vector < glm::vec2 > uvs;
 		std::vector < glm::vec3 > normals;
+		//Materiais
+		glm::vec3 ka, kd, ks;
+		GLfloat ns;
+		void load_texture(const char* filename);
 		bool ReadFiles(const char* filename);
+		bool ReadMaterial(const char* filename);
 		void sendModelData();
 		
 	;
