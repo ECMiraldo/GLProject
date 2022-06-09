@@ -1,18 +1,7 @@
-#pragma once
-#include <glew.h>
-#include <GLFW\glfw3.h>
-#include <glm/ext.hpp>
-#include <vector>
-#include <gl/GL.h>
-#include <iostream>
 #include "Model.h"
-#include <math.h>
 #include "LoadShaders.h"
 #include <glm/gtc/matrix_transform.hpp> // translate, rotate, scale, perspective, ...
 
-#pragma comment(lib, "glew32s.lib")
-#pragma comment(lib, "glfw3.lib")
-#pragma comment(lib, "opengl32.lib")
 
 using namespace glm;
 
@@ -23,7 +12,7 @@ void Model::Display(mat4 view, mat4 projection) {
 	glBindVertexArray(vertexArrayObject);
 
 	// Envia comando para desenho de primitivas GL_TRIANGLES, que utilizará os dados do VAO vinculado.
-	glDrawArrays(GL_QUADS, 0, vertices.size());
+	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 	// glDrawElements(GL_TRIANGLES, NumIndices, GL_UNSIGNED_INT, (void*)0); // ebo
 
 }

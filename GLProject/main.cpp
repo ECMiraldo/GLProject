@@ -16,12 +16,7 @@
 #define HEIGHT 800
 #define WIDTH 600
 
-//To do: unmake this variables global
-#define NumVAOs 1
-#define NumBuffers 3 // Vértices, texturas, normais
-GLuint VAOs[NumVAOs];
-GLuint Buffers[NumBuffers];
-const GLuint NumVertices = 6; //Get num of vertices from model.vertices
+
 
 void Init(void) {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -30,6 +25,24 @@ void Init(void) {
 	// Descomentar para ativar o Face Culling
 	glEnable(GL_CULL_FACE);
 }
+
+
+
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+	// Se faz zoom in
+	if (yoffset == 1) {
+		// Incremento no zoom, varia com a distância da câmara
+		Camera::zoom += fabs(Camera::zoom) + 0.1f;
+	}
+	
+	// Senão, se faz zoom out
+	else if (yoffset == -1) {
+		// Incremento no zoom, varia com a distância da câmara
+		Camera::zoom -= fabs(Camera::zoom) + 0.1f;
+	}
+	std::cout << "ZOOM = " << Camera::zoom << std::endl;
+}
+
 
 static unsigned int CompileShader(unsigned int type, const std::string& source) {
 
@@ -98,12 +111,14 @@ int main(void) {
 	//Precisa ser depois do glewInit para funcionar 
 	Model model = Model("Iron_Man.obj");
 	Camera camera = Camera(60.0f, WIDTH, HEIGHT, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -10.0f));
-	//glfwSetScrollCallback(window, camera.scrollCallback);
+	
+	glfwSetScrollCallback(window, scrollCallback);
 
 
 
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		camera.Update();
 		model.Display(camera.view, camera.projection);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -113,9 +128,5 @@ int main(void) {
 
 	glfwTerminate();
 	return 0;
-
-
-
-
 }
 
