@@ -163,13 +163,8 @@ void Model::sendModelData() {
 
 	//Posição no shader (ponteiro da variavel do shader)
 	GLint vertexPositions = glGetProgramResourceLocation(shaderProgram, GL_PROGRAM_INPUT, "vertexPositions");
-	glVertexAttribPointer(vertexPositions, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	GLint uvs = glGetProgramResourceLocation(shaderProgram, GL_PROGRAM_INPUT, "uvs");
-	glVertexAttribPointer(vertexPositions, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	GLint normals = glGetProgramResourceLocation(shaderProgram, GL_PROGRAM_INPUT, "normals");
-	glVertexAttribPointer(vertexPositions, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-
 
 	// Ativa o VBO 'Buffers[0]'.
 	glBindBuffer(GL_ARRAY_BUFFER, bufferArrayObjects[0]);
