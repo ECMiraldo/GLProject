@@ -25,6 +25,8 @@ class Model
 		glm::mat4 matrix;
 		Model(const char* filename);
 		void Display(glm::vec3 position,glm::vec3 orientation);
+		void sendModelData(GLuint shaderProgram);
+
 	private:
 		//VAO
 		GLuint vertexArrayObject;
@@ -42,13 +44,10 @@ class Model
 		void load_texture(const char* filename);
 		bool ReadFiles(const char* filename);
 		bool ReadMaterial(const char* filename);
-		void sendModelData();
-		
 	;
 };
 	inline Model::Model(const char* filename) {
 		matrix = glm::mat4(1.0f);
 		ReadFiles(filename);
-		sendModelData();
 	}
 

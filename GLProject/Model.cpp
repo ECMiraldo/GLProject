@@ -9,24 +9,19 @@ using namespace glm;
 
 
 void Model::Display(vec3 position, vec3 orientation) {
-	mat4 mvp;
-	mat4 projection = perspective(radians(60.0f), 16 / 9.0f, 0.1f, 1000.0f);
-	mat4 view = lookAt(vec3(0, 2,5), vec3(0, 2, 0), vec3(0, 1, 0));
-	mat4 matrixModelo = mat4(1.0f); // matrix criada para cada modelo, isto é, precisa ser feito para que os modelos não deem spawn um em cima do outro
+	mat4 model = mat4(1.0f); // matrix criada para cada modelo, isto é, precisa ser feito para que os modelos não deem spawn um em cima do outro
 	
-	matrixModelo = translate(matrixModelo,position);
+	model = translate(model,position);
 
 	//Orientation é o pitch, yaw, roll em graus
 
-	matrixModelo = rotate(matrixModelo,radians(orientation.x), vec3(1, 0, 0)); //pitch
-	matrixModelo = rotate(matrixModelo,radians(orientation.y), vec3(0, 1, 0)); //yaw
-	matrixModelo = rotate(matrixModelo,radians(orientation.z), vec3(0, 0, 1)); //roll
+	model = rotate(model,radians(orientation.x), vec3(1, 0, 0)); //pitch
+	model = rotate(model,radians(orientation.y), vec3(0, 1, 0)); //yaw
+	model = rotate(model,radians(orientation.z), vec3(0, 0, 1)); //roll
 
-	mvp = projection * view * matrixModelo;
-
-	GLint MVP = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "mvp");
+	GLint modelId = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "Model");
 	//std::cout << MVP;
-	glProgramUniformMatrix4fv(shaderProgram, MVP, 1, GL_FALSE, glm::value_ptr(mvp));
+	glProgramUniformMatrix4fv(shaderProgram, modelId, 1, GL_FALSE, glm::value_ptr(model));
 
 
 	glBindVertexArray(vertexArrayObject);
@@ -185,7 +180,7 @@ void Model::load_texture(const char* filename) {
 }
 
 
-void Model::sendModelData() {
+void Model::sendModelData(GLuint shaderProgram) {
 
 	GLfloat vertex[9264 * 3];
 	GLfloat uvsArray[9264 * 2];
@@ -218,15 +213,7 @@ void Model::sendModelData() {
 		if (i == 1) glBufferStorage(GL_ARRAY_BUFFER, sizeof(uvsArray), uvsArray, 0);
 		if (i == 2) glBufferStorage(GL_ARRAY_BUFFER, sizeof(normais), normais, 0);
 	}													   
-	ShaderInfo shaders[] = {
-		{GL_VERTEX_SHADER,"VertexShader.vert"},
-		{GL_FRAGMENT_SHADER,"FragmentShader.frag"},
-		{GL_NONE,NULL},
-	};
-
-	//Shader
-	shaderProgram = LoadShaders(shaders);
-	glUseProgram(shaderProgram);
+	
 
 	//Posição no shader (ponteiro da variavel do shader)
 	GLint vertexPositions = glGetProgramResourceLocation(shaderProgram, GL_PROGRAM_INPUT, "vertexPositions");
