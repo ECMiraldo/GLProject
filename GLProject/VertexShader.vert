@@ -4,14 +4,12 @@
 uniform mat4 Model;
 uniform mat4 View;
 uniform mat4 Projection;
-uniform mat4 Projection;
-layout (location = 0) in vec3 vertexPositions;
+uniform mat4 ModelView;
+uniform mat3 NormalMatrix;
+
+layout (location = 0) in vec3 vPosition;
 layout (location = 1) in vec2 uvs;
-layout (location = 2) in vec3 normals;
-
-
-in vec3 vPosition;			// Coordenadas locais do vértice
-in vec3 vNormal;			// Normal do vértice
+layout (location = 2) in vec3 vNormal;
 
 
 out vec2 uv;
@@ -22,11 +20,8 @@ out vec3 textureVector;
 
 void main()
 { 
-	mat4 ModelView = View * Model;
-	mat4 NormalMatrix = glm::inverseTranspose(glm::mat3(ModelView));
-
-	gl_Position = mvp* vec4(vertexPositions,1.0f);
-	normal = normals;
+	gl_Position = (Model * View * Projection) * vec4(vPosition,1.0f);
+	normal = vNormal;
 	uv = uvs;
 
 

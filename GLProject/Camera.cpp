@@ -15,7 +15,7 @@ Camera::Camera(float fovDegrees, float WindowWidth, float WindowHeight, glm::vec
 
 
 void Camera::Update(GLuint shaderProgram) {
-	GLint viewID = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "V");
+	GLint viewID = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "View");
 	GLint projectionId = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "Projection");
 
 	view = glm::lookAt(glm::vec3(position.x, position.y, Camera::zoom), target, glm::vec3(0.0f, 1.0f, 0.0f));

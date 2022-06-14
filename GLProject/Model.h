@@ -22,7 +22,7 @@ class Model
 {
 	public:
 		float position;
-		glm::mat4 matrix;
+		glm::mat4 model;
 		Model(const char* filename);
 		void Display(glm::vec3 position,glm::vec3 orientation);
 		void sendModelData(GLuint shaderProgram);
@@ -47,7 +47,7 @@ class Model
 	;
 };
 	inline Model::Model(const char* filename) {
-		matrix = glm::mat4(1.0f);
+		model = glm::mat4(1.0f);
 		ReadFiles(filename);
 	}
 

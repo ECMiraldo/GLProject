@@ -9,8 +9,6 @@ using namespace glm;
 
 
 void Model::Display(vec3 position, vec3 orientation) {
-	mat4 model = mat4(1.0f); // matrix criada para cada modelo, isto é, precisa ser feito para que os modelos não deem spawn um em cima do outro
-	
 	model = translate(model,position);
 
 	//Orientation é o pitch, yaw, roll em graus
@@ -216,9 +214,9 @@ void Model::sendModelData(GLuint shaderProgram) {
 	
 
 	//Posição no shader (ponteiro da variavel do shader)
-	GLint vertexPositions = glGetProgramResourceLocation(shaderProgram, GL_PROGRAM_INPUT, "vertexPositions");
+	GLint vertexPositions = glGetProgramResourceLocation(shaderProgram, GL_PROGRAM_INPUT, "vPosition");
 	GLint uvs = glGetProgramResourceLocation(shaderProgram, GL_PROGRAM_INPUT, "uvs");
-	GLint normals = glGetProgramResourceLocation(shaderProgram, GL_PROGRAM_INPUT, "normals");
+	GLint normals = glGetProgramResourceLocation(shaderProgram, GL_PROGRAM_INPUT, "vNormal");
 
 	// Ativa o VBO 'Buffers[0]'.
 	glBindBuffer(GL_ARRAY_BUFFER, bufferArrayObjects[0]);
