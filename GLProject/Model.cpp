@@ -9,6 +9,7 @@ using namespace glm;
 
 
 void Model::Display(vec3 position, vec3 orientation) {
+	
 	model = translate(model,position);
 
 	//Orientation é o pitch, yaw, roll em graus
