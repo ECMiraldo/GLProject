@@ -9,14 +9,15 @@ using namespace glm;
 
 
 void Model::Display(vec3 position, vec3 orientation) {
+	if (!positionSet) {
+		model = translate(model, position);
+		//Orientation é o pitch, yaw, roll em graus
+		model = rotate(model, radians(orientation.x), vec3(1, 0, 0)); //pitch
+		model = rotate(model, radians(orientation.y), vec3(0, 1, 0)); //yaw
+		model = rotate(model, radians(orientation.z), vec3(0, 0, 1)); //roll
+		positionSet = true;
+	}
 	
-	model = translate(model,position);
-
-	//Orientation é o pitch, yaw, roll em graus
-
-	model = rotate(model,radians(orientation.x), vec3(1, 0, 0)); //pitch
-	model = rotate(model,radians(orientation.y), vec3(0, 1, 0)); //yaw
-	model = rotate(model,radians(orientation.z), vec3(0, 0, 1)); //roll
 
 	GLint modelId = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "Model");
 	//std::cout << MVP;

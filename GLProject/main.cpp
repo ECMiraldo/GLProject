@@ -121,7 +121,7 @@ int main(void) {
 	//Shader
 	GLuint shaderProgram = LoadShaders(shaders);
 	glUseProgram(shaderProgram);
-	model.sendModelData(shaderProgram);
+	
 	GLint modelViewId = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "ModelView");
 	GLint normalMatrixId = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "NormalMatrix");
 	
@@ -158,7 +158,7 @@ int main(void) {
 	glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "material.specular"), 1, glm::value_ptr(glm::vec3(1.0, 1.0, 1.0)));
 	glProgramUniform1f(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "material.shininess"), 12.0f);
 
-	
+	model.sendModelData(shaderProgram);
 	glfwSetScrollCallback(window, scrollCallback);
 	
 	while (!glfwWindowShouldClose(window)) {
@@ -170,9 +170,9 @@ int main(void) {
 		glm::mat4 NormalMatrix = glm::inverseTranspose(glm::mat3(ModelView));
 		glProgramUniformMatrix4fv(shaderProgram, normalMatrixId, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
 
-		model.Display(glm::vec3(0,0,0),glm::vec3(0,0,0));
-		model.Display(glm::vec3(-2,-1,-5),glm::vec3(0,0,0));
-		model.Display(glm::vec3(2,-1,-5),glm::vec3(0,0,0));
+		model.Display(glm::vec3(0,0,0),glm::vec3(0,180,0));
+		model.Display(glm::vec3(-2,-1,-5),glm::vec3(0,180,0));
+		model.Display(glm::vec3(2,-1,-5),glm::vec3(0,180,0));
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
