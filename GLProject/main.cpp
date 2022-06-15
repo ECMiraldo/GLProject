@@ -32,13 +32,13 @@ void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 	// Se faz zoom in
 	if (yoffset == 1) {
 		// Incremento no zoom, varia com a distância da câmara
-		Camera::zoom += fabs(Camera::zoom) + 0.1f;
+		Camera::zoom -= 0.1f;
 	}
 	
 	// Senão, se faz zoom out
 	else if (yoffset == -1) {
 		// Incremento no zoom, varia com a distância da câmara
-		Camera::zoom -= fabs(Camera::zoom) + 0.1f;
+		Camera::zoom += 0.1f;
 	}
 	std::cout << "ZOOM = " << Camera::zoom << std::endl;
 }
