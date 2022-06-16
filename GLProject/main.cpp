@@ -44,49 +44,6 @@ void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 }
 
 
-static unsigned int CompileShader(unsigned int type, const std::string& source) {
-
-	unsigned int id = glCreateShader(GL_VERTEX_SHADER);
-	const char* src = source.c_str();
-	glShaderSource(id, 1, &src, nullptr);
-	glCompileShader(id);
-
-	int result;
-	glGetShaderiv(id, GL_UNSIGNED_INT, &result);
-	if (result == GL_FALSE)
-	{
-		int length;
-		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-		char* message = (char*)alloca(length * sizeof(char));
-		glGetShaderInfoLog(id, length, &length, message);
-		std::cout << "Failed to compile shader  " << (type == GL_VERTEX_SHADER ? "vertex" : "Fragment") << std::endl;
-		std::cout << message << std::endl;
-		return 0;
-	}	
-
-	return id;
-}
-
-
-static unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader) {
-
-	unsigned int program = glCreateProgram();
-	unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
-	unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
-				
-
-	glAttachShader(program, vs);
-	glAttachShader(program, fs);
-	glLinkProgram(program);
-	glValidateProgram(program);
-
-	glDetachShader(program, vs);
-	glDetachShader(program, fs);
-
-	return program;
-}
-
-
 
 int main(void) {
 	GLFWwindow* window;
@@ -110,7 +67,7 @@ int main(void) {
 
 	//Precisa ser depois do glewInit para funcionar 
 	Model model = Model("Iron_Man.obj");
-	Camera camera = Camera(60.0f, WIDTH, HEIGHT, glm::vec3(0.0f, 2.0f, 5.0f), glm::vec3(0.0f, 2.0f, 0.0f));
+	Camera camera = Camera(60.0f, WIDTH, HEIGHT, glm::vec3(0.0f, 2.0f, 5.0f), glm::vec3(0.0f, 2.0f, -1.0f));
 	
 	ShaderInfo shaders[] = {
 		{GL_VERTEX_SHADER,"VertexShader.vert"},
@@ -170,9 +127,9 @@ int main(void) {
 		glm::mat4 NormalMatrix = glm::inverseTranspose(glm::mat3(ModelView));
 		glProgramUniformMatrix4fv(shaderProgram, normalMatrixId, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
 
-		model.Display(glm::vec3(0,0,0),glm::vec3(0,180,0));
-		model.Display(glm::vec3(-2,-1,-5),glm::vec3(0,180,0));
-		model.Display(glm::vec3(2,-1,-5),glm::vec3(0,180,0));
+		model.Display(glm::vec3(0,0,0),glm::vec3(0,0,0));
+		model.Display(glm::vec3(-2,-1,-5),glm::vec3(0,0,0));
+		model.Display(glm::vec3(2,-1,-5),glm::vec3(0,0,0));
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

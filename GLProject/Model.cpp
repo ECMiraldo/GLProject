@@ -9,21 +9,20 @@ using namespace glm;
 
 
 void Model::Display(vec3 position, vec3 orientation) {
-	if (!positionSet) {
-		translate(model, position);
+	model = mat4(1.0f);
+	model = translate(model, position);
+	std::cout << position.x << position.y << position.z << std::endl;
 		//Orientation é o pitch, yaw, roll em graus
-		rotate(model, radians(orientation.x), vec3(1, 0, 0)); //pitch
-		rotate(model, radians(orientation.y), vec3(0, 1, 0)); //yaw
-		rotate(model, radians(orientation.z), vec3(0, 0, 1)); //roll
-		positionSet = true;
-	}
-	
+	model = rotate(model, radians(orientation.x), vec3(1, 0, 0)); //pitch
+	model = rotate(model, radians(orientation.y), vec3(0, 1, 0)); //yaw
+	model = rotate(model, radians(orientation.z), vec3(0, 0, 1)); //roll
+
 
 	GLint modelId = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "Model");
 	//std::cout << MVP;
 	glProgramUniformMatrix4fv(shaderProgram, modelId, 1, GL_FALSE, glm::value_ptr(model));
 
-
+	
 	glBindVertexArray(vertexArrayObject);
 
 	// Envia comando para desenho de primitivas GL_TRIANGLES, que utilizará os dados do VAO vinculado.
