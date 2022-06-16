@@ -9,18 +9,30 @@ using namespace glm;
 
 
 void Model::Display(vec3 position, vec3 orientation) {
-	model = mat4(1.0f);
-	model = translate(model, position);
+	camera.Update(shaderProgram);
+	mat4 tempmodel = model;
+	tempmodel = translate(tempmodel, position);
 	std::cout << position.x << position.y << position.z << std::endl;
-		//Orientation é o pitch, yaw, roll em graus
-	model = rotate(model, radians(orientation.x), vec3(1, 0, 0)); //pitch
-	model = rotate(model, radians(orientation.y), vec3(0, 1, 0)); //yaw
-	model = rotate(model, radians(orientation.z), vec3(0, 0, 1)); //roll
-
+	//Orientation é o pitch, yaw, roll em graus
+	tempmodel = rotate(tempmodel, radians(orientation.x), vec3(1, 0, 0)); //pitch
+	tempmodel = rotate(tempmodel, radians(orientation.y), vec3(0, 1, 0)); //yaw
+	tempmodel = rotate(tempmodel, radians(orientation.z), vec3(0, 0, 1)); //roll
 
 	GLint modelId = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "Model");
-	//std::cout << MVP;
-	glProgramUniformMatrix4fv(shaderProgram, modelId, 1, GL_FALSE, glm::value_ptr(model));
+	glProgramUniformMatrix4fv(shaderProgram, modelId, 1, GL_FALSE, glm::value_ptr(tempmodel));
+
+	mat4 modelView = camera.view * tempmodel;
+	GLint modelViewId = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "ModelView");
+	glProgramUniformMatrix4fv(shaderProgram, modelViewId, 1, GL_FALSE, glm::value_ptr(modelView));
+
+	mat3 normalMatrix = glm::inverseTranspose(glm::mat3(modelView));
+	GLint normalMatrixId = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "NormalMatrix");
+	glProgramUniformMatrix4fv(shaderProgram, normalMatrixId, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+
+	GLint viewID = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "View");
+	glProgramUniformMatrix4fv(shaderProgram, viewID, 1, GL_FALSE, glm::value_ptr(camera.view));
+	GLint projectionId = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "Projection");
+	glProgramUniformMatrix4fv(shaderProgram, projectionId, 1, GL_FALSE, glm::value_ptr(camera.projection));
 
 	
 	glBindVertexArray(vertexArrayObject);
@@ -28,7 +40,6 @@ void Model::Display(vec3 position, vec3 orientation) {
 	// Envia comando para desenho de primitivas GL_TRIANGLES, que utilizará os dados do VAO vinculado.
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 	// glDrawElements(GL_TRIANGLES, NumIndices, GL_UNSIGNED_INT, (void*)0); // ebo
-
 }
 
 bool Model::ReadFiles(const char* filename) {
@@ -179,7 +190,7 @@ void Model::load_texture(const char* filename) {
 }
 
 
-void Model::sendModelData(GLuint shaderProgram) {
+GLuint Model::sendModelData() {
 
 	GLfloat vertex[9264 * 3];
 	GLfloat uvsArray[9264 * 2];
@@ -213,6 +224,16 @@ void Model::sendModelData(GLuint shaderProgram) {
 		if (i == 2) glBufferStorage(GL_ARRAY_BUFFER, sizeof(normais), normais, 0);
 	}													   
 	
+	ShaderInfo shaders[] = {
+	{GL_VERTEX_SHADER,"VertexShader.vert"},
+	{GL_FRAGMENT_SHADER,"FragmentShader.frag"},
+	{GL_NONE,NULL},
+	};
+
+	GLuint shaderProgram = LoadShaders(shaders);
+	this->shaderProgram = shaderProgram;
+	glUseProgram(shaderProgram);
+
 
 	//Posição no shader (ponteiro da variavel do shader)
 	GLint vertexPositions = glGetProgramResourceLocation(shaderProgram, GL_PROGRAM_INPUT, "vPosition");
@@ -240,5 +261,5 @@ void Model::sendModelData(GLuint shaderProgram) {
 	GLint textura = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "textura");
 	glProgramUniform1i(shaderProgram, textura, 0);
 
-
+	return shaderProgram;
 }

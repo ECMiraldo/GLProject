@@ -19,7 +19,7 @@ out vec3 vNormalEyeSpace;
 
 void main()
 { 
-	gl_Position = (Model * View * Projection) * vec4(vPosition,1.0f);
+	
 	normal = vNormal;
 	uv = uvs;
 
@@ -31,5 +31,5 @@ void main()
 	vNormalEyeSpace = normalize(NormalMatrix * vNormal);
 
 	// Posição final do vértice (em coordenadas de clip)
-	gl_Position = Projection * ModelView * vec4(vPosition, 1.0f);
+	gl_Position = (Projection * View * Model) * vec4(vPosition,1.0f);
 }

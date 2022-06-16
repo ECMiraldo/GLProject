@@ -24,11 +24,15 @@ class Camera
 		static float zoom;
 		static float angle;
 		Camera(float fovDegrees, float WindowWidth, float WindowHeight, glm::vec3 pos, glm::vec3 target);
+		Camera();
 		void Update(GLuint shaderProgram);
+		
 	private:
 		
 
 };
+
+
 
 
 

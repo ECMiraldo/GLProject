@@ -1,5 +1,4 @@
-﻿  Model.cpp
+﻿  main.cpp
 C:\Users\EduardoCacciariMiral\source\repos\GLProject\GLProject\LoadShaders.h(36,1): warning C4005: '_DEBUG': macro redefinition
-C:\Users\EduardoCacciariMiral\source\repos\GLProject\GLProject\Model.cpp : message : see previous definition of '_DEBUG'
-C:\Users\EduardoCacciariMiral\source\repos\GLProject\GLProject\Model.cpp(29,47): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\Users\EduardoCacciariMiral\source\repos\GLProject\GLProject\main.cpp : message : see previous definition of '_DEBUG'
   GLProject.vcxproj -> C:\Users\EduardoCacciariMiral\source\repos\GLProject\x64\Debug\GLProject.exe
