@@ -6,7 +6,7 @@
 
 void Camera::InicializeCamera(float fovDegrees, float WindowWidth, float WindowHeight, glm::vec3 pos, glm::vec3 target) {
 
-	zoom = 1.0f;
+	zoom = 5.0f;
 	this->position = pos;
 	this->position.z = zoom;
 	this->target = target;
@@ -19,7 +19,7 @@ void Camera::InicializeCamera(float fovDegrees, float WindowWidth, float WindowH
 }
 void Camera::Update() {
 
-	view = glm::lookAt(glm::vec3(position.x, position.y, position.z + Camera::zoom), target, glm::vec3(0.0f, 1.0f, 0.0f));
+	view = glm::lookAt(glm::vec3(position.x, position.y, position.z), target, glm::vec3(0.0f, 1.0f, 0.0f));
 	
 }
 void Camera::mouseCallback(GLFWwindow* window, double xpos, double ypos) {
@@ -55,11 +55,11 @@ void Camera::mouseCallback(GLFWwindow* window, double xpos, double ypos) {
 		pitch = -90.0f;
 
 	// alterar os valores da camera
-	//position.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch)) ;
-	//position.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch)) ;
-	position.x = position.x * cos(glm::radians(xoffset));
-	position.y = -sin(glm::radians(pitch));
-    position.z = position.z * -sin(glm::radians(xoffset));
+	position.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch)) * zoom;
+	position.y = -sin(glm::radians(pitch)) * zoom;
+	position.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch)) * zoom;
+	//position.x = position.x * cos(glm::radians(xoffset));
+   // position.z = position.z * -sin(glm::radians(xoffset));
 
 
 
@@ -77,9 +77,11 @@ void Camera::scrollCallback(GLFWwindow* window, double xoffset, double yoffset) 
 		zoom += fabs(zoom) * 0.1f;
 	}
 
-	//position.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch)) * zoom;
-	//position.y = -sin(glm::radians(pitch)) * zoom;
-	//position.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch)) * zoom;
+
+	position.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch)) * zoom;
+	position.y = -sin(glm::radians(pitch)) * zoom;
+	position.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch)) * zoom;
+
 
 
 	std::cout << "ZOOM = " << zoom << std::endl;

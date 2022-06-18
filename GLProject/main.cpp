@@ -59,7 +59,7 @@ int main(void) {
 	if (!glfwInit()) return -1;
 
 	window = glfwCreateWindow(800, 600, "Iron_Man", NULL, NULL);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 
 	if (!window) {
@@ -69,10 +69,11 @@ int main(void) {
 
 
 	glfwMakeContextCurrent(window);
-	Init();
-	glewExperimental = GL_TRUE;
 	glfwSetCursorPosCallback(window, HandleMouse);
 	glfwSetScrollCallback(window, HandleScroll);
+	Init();
+	glewExperimental = GL_TRUE;
+	
 	glewInit(); 
 
 
@@ -104,7 +105,7 @@ int main(void) {
 	glProgramUniform1f(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "pointLight[0].quadratic"), 0.02f);
 
 	// Fonte de luz pontual #2
-	glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "pointLight[1].position"), 1, glm::value_ptr(glm::vec3(-2.0, 2.0, 5.0)));
+	glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "pointLight[1].position"), 1, glm::value_ptr(Camera::GetInstance()->target - Camera::GetInstance()->position ));
 	glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "pointLight[1].ambient"), 1, glm::value_ptr(glm::vec3(0.1, 0.1, 0.1)));
 	glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "pointLight[1].diffuse"), 1, glm::value_ptr(glm::vec3(1.0, 1.0, 1.0)));
 	glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "pointLight[1].specular"), 1, glm::value_ptr(glm::vec3(1.0, 1.0, 1.0)));
