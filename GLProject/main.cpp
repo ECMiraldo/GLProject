@@ -13,9 +13,8 @@
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "opengl32.lib")
 
-#define HEIGHT 800
-#define WIDTH 600
-
+#define HEIGHT 600
+#define WIDTH 800
 
 
 void Init(void) {
@@ -26,31 +25,41 @@ void Init(void) {
 	glEnable(GL_CULL_FACE);
 }
 
-
-
-void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
-	// Se faz zoom in
-	if (yoffset == 1) {
-		// Incremento no zoom, varia com a distância da câmara
-		Camera::zoom -= 0.1f;
-	}
-	// Senão, se faz zoom out
-	else if (yoffset == -1) {
-		// Incremento no zoom, varia com a distância da câmara
-		Camera::zoom += 0.1f;
-	}
-	std::cout << "ZOOM = " << Camera::zoom << std::endl;
+//permite a chamada do script para movimentar a camera pelo rato
+void HandleMouse(GLFWwindow* window, double xpos, double ypos) {
+	Camera::GetInstance()->mouseCallback(window, xpos, ypos);
 }
+
+//permite a chamada do script para efetuar zoom pelo scroll
+void HandleScroll(GLFWwindow* window, double xoffset, double yoffset) {
+	Camera::GetInstance()->scrollCallback(window, xoffset, yoffset);
+}
+//void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+//	// Se faz zoom in
+//	if (yoffset == 1) {
+//		// Incremento no zoom, varia com a distância da câmara
+//		Camera::zoom -= 0.1f;
+//	}
+//	// Senão, se faz zoom out
+//	else if (yoffset == -1) {
+//		// Incremento no zoom, varia com a distância da câmara
+//		Camera::zoom += 0.1f;
+//	}
+//	std::cout << "ZOOM = " << Camera::zoom << std::endl;
+//}
 
 
 
 int main(void) {
 	GLFWwindow* window;
+	Camera* camera;
+	camera = camera->GetInstance();
+	camera->InicializeCamera(45.0f, WIDTH, HEIGHT, glm::vec3(0.0f, 2.0f, 5.0f), glm::vec3(0.0f, 2.0f, 0.0));
 
 	if (!glfwInit()) return -1;
 
 	window = glfwCreateWindow(800, 600, "Iron_Man", NULL, NULL);
-	
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 
 	if (!window) {
@@ -62,13 +71,17 @@ int main(void) {
 	glfwMakeContextCurrent(window);
 	Init();
 	glewExperimental = GL_TRUE;
+	glfwSetCursorPosCallback(window, HandleMouse);
+	glfwSetScrollCallback(window, HandleScroll);
 	glewInit(); 
 
 
 
 	//Precisa ser depois do glewInit para funcionar 
-	Camera camera = Camera(90.0f, WIDTH, HEIGHT, glm::vec3(0.0f, 2.0f, 5.0f), glm::vec3(0.0f, 2.0f, 0.0));
-	Model model = Model("Iron_Man.obj", camera);
+	
+	
+	
+	Model model = Model("Iron_Man.obj");
 	GLuint shaderProgram = model.sendModelData();
 	
 	
@@ -105,7 +118,8 @@ int main(void) {
 	glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "material.specular"), 1, glm::value_ptr(glm::vec3(1.0, 1.0, 1.0)));
 	glProgramUniform1f(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "material.shininess"), 12.0f);
 
-	glfwSetScrollCallback(window, scrollCallback);
+   
+	
 	
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

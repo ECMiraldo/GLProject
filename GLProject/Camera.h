@@ -21,14 +21,19 @@ class Camera
 		glm::mat4 projection;
 		glm::vec3 position;
 		glm::vec3 target;
-		static float zoom;
-		static float angle;
-		Camera(float fovDegrees, float WindowWidth, float WindowHeight, glm::vec3 pos, glm::vec3 target);
-		Camera();
-		void Update(GLuint shaderProgram);
+		double lastX, lastY, yaw, pitch;
+		bool firstMouse;
+	    float zoom;
+		float angle;
+	    void mouseCallback(GLFWwindow* window, double xpos, double ypos);
+	    void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+		static Camera* GetInstance();
+		void InicializeCamera(float fovDegrees, float WindowWidth, float WindowHeight, glm::vec3 pos, glm::vec3 target);
+		Camera() { lastX = 0.0f; lastY = 0.0f; yaw = 0.0f; pitch = 0.0f; firstMouse = true; zoom = 5.0f; };
+		void Update();
 		
 	private:
-		
+		static Camera* instance;
 
 };
 

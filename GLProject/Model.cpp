@@ -9,7 +9,7 @@ using namespace glm;
 
 
 void Model::Display(vec3 position, vec3 orientation) {
-	camera.Update(shaderProgram);
+	Camera::GetInstance()->Update();
 	mat4 tempmodel = model;
 	tempmodel = translate(tempmodel, position);
 	std::cout << position.x << position.y << position.z << std::endl;
@@ -21,7 +21,7 @@ void Model::Display(vec3 position, vec3 orientation) {
 	GLint modelId = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "Model");
 	glProgramUniformMatrix4fv(shaderProgram, modelId, 1, GL_FALSE, glm::value_ptr(tempmodel));
 
-	mat4 modelView = camera.view * tempmodel;
+	mat4 modelView = Camera::GetInstance()->view * tempmodel;
 	GLint modelViewId = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "ModelView");
 	glProgramUniformMatrix4fv(shaderProgram, modelViewId, 1, GL_FALSE, glm::value_ptr(modelView));
 
@@ -30,9 +30,9 @@ void Model::Display(vec3 position, vec3 orientation) {
 	glProgramUniformMatrix4fv(shaderProgram, normalMatrixId, 1, GL_FALSE, glm::value_ptr(normalMatrix));
 
 	GLint viewID = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "View");
-	glProgramUniformMatrix4fv(shaderProgram, viewID, 1, GL_FALSE, glm::value_ptr(camera.view));
+	glProgramUniformMatrix4fv(shaderProgram, viewID, 1, GL_FALSE, glm::value_ptr(Camera::GetInstance()->view));
 	GLint projectionId = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "Projection");
-	glProgramUniformMatrix4fv(shaderProgram, projectionId, 1, GL_FALSE, glm::value_ptr(camera.projection));
+	glProgramUniformMatrix4fv(shaderProgram, projectionId, 1, GL_FALSE, glm::value_ptr(Camera::GetInstance()->projection));
 
 	
 	glBindVertexArray(vertexArrayObject);

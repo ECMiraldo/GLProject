@@ -24,7 +24,7 @@ class Model
 	public:
 		float position;
 		glm::mat4 model;
-		Model(const char* filename, Camera camera);
+		Model(const char* filename);
 		void Display(glm::vec3 position,glm::vec3 orientation);
 		GLuint sendModelData();
 
@@ -35,7 +35,7 @@ class Model
 		GLuint shaderProgram;
 		GLuint num_vertices;
 
-		Camera camera;
+		
 		char materialsFilename[50];
 		std::vector < glm::vec3 > vertices;
 		std::vector < glm::vec2 > uvs;
@@ -48,9 +48,8 @@ class Model
 		bool ReadMaterial(const char* filename);
 	;
 };
-	inline Model::Model(const char* filename, Camera camera) {
+	inline Model::Model(const char* filename) {
 		model = glm::mat4(1.0f);
-		this->camera = camera;
 		ReadFiles(filename);
 	}
 
