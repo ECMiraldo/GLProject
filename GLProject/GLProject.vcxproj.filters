@@ -45,7 +45,7 @@
     <ClInclude Include="LoadShaders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\pedro\Desktop\stb_image.h">
+    <ClInclude Include="Luzes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

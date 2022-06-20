@@ -29,7 +29,7 @@ class Camera
 	    void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 		static Camera* GetInstance();
 		void InicializeCamera(float fovDegrees, float WindowWidth, float WindowHeight, glm::vec3 pos, glm::vec3 target);
-		Camera() { lastX = 0.0f; lastY = 0.0f; yaw = 90.0f; pitch = 0.0f; firstMouse = true; zoom = 5.0f; };
+		Camera() { lastX = 0.0f; lastY = 0.0f; yaw = 0.0f; pitch = 0.0f; firstMouse = true; zoom = 5.0f; };
 		void Update();
 		
 	private:

@@ -25,8 +25,10 @@ class Model
 		float position;
 		glm::mat4 model;
 		Model(const char* filename);
-		void Display(glm::vec3 position,glm::vec3 orientation);
+		void Draw(glm::vec3 position,glm::vec3 orientation);
 		GLuint sendModelData();
+		glm::vec3 ka, kd, ks;
+		GLfloat ns;
 
 	private:
 		//VAO
@@ -41,8 +43,7 @@ class Model
 		std::vector < glm::vec2 > uvs;
 		std::vector < glm::vec3 > normals;
 		//Materiais
-		glm::vec3 ka, kd, ks;
-		GLfloat ns;
+		
 		void load_texture(const char* filename);
 		bool ReadFiles(const char* filename);
 		bool ReadMaterial(const char* filename);

@@ -1,5 +1,5 @@
+#pragma once
 #include <GL\gl.h>
-
 /*****************************************************************************
 					 GLuint LoadShaders(ShaderInfo*);
 

@@ -8,15 +8,15 @@ using namespace glm;
 
 
 
-void Model::Display(vec3 position, vec3 orientation) {
+void Model::Draw(vec3 position, vec3 orientation) {
 	Camera::GetInstance()->Update();
 	mat4 tempmodel = model;
 	tempmodel = translate(tempmodel, position);
-	//std::cout << position.x << position.y << position.z << std::endl;
+	
 	//Orientation é o pitch, yaw, roll em graus
-	//tempmodel = rotate(tempmodel, radians(orientation.x), vec3(1, 0, 0)); //pitch
-	//tempmodel = rotate(tempmodel, radians(orientation.y), vec3(0, 1, 0)); //yaw
-	//tempmodel = rotate(tempmodel, radians(orientation.z), vec3(0, 0, 1)); //roll
+	tempmodel = rotate(tempmodel, radians(orientation.x), vec3(1, 0, 0)); //pitch
+	tempmodel = rotate(tempmodel, radians(orientation.y), vec3(0, 1, 0)); //yaw
+	tempmodel = rotate(tempmodel, radians(orientation.z), vec3(0, 0, 1)); //roll
 
 	GLint modelId = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "Model");
 	glProgramUniformMatrix4fv(shaderProgram, modelId, 1, GL_FALSE, glm::value_ptr(tempmodel));

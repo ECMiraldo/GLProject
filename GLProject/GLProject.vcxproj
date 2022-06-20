@@ -149,9 +149,9 @@
     <None Include="VertexShader.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="C:\Users\pedro\Desktop\stb_image.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="LoadShaders.h" />
+    <ClInclude Include="Luzes.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>

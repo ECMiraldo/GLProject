@@ -20,7 +20,7 @@ void Camera::InicializeCamera(float fovDegrees, float WindowWidth, float WindowH
 void Camera::Update() {
 
 	view = glm::lookAt(glm::vec3(position.x, position.y, position.z), target, glm::vec3(0.0f, 1.0f, 0.0f));
-	
+
 }
 void Camera::mouseCallback(GLFWwindow* window, double xpos, double ypos) {
 
