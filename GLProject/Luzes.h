@@ -4,6 +4,8 @@
 #include "Model.h"
 #include "Camera.h"
 
+using namespace biblioteca;
+
 namespace lights {
 	bool light[] = { true, true, true, true };
 	void Lights(Model* model);
@@ -107,7 +109,6 @@ void lights::OnkeyPress(GLFWwindow* window, int key, int scancode, int action, i
 
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
 	{
-		std::cout << "valinhagod" << std::endl;
 		if (light[0])
 		{
 			light[0] = false;
@@ -120,7 +121,6 @@ void lights::OnkeyPress(GLFWwindow* window, int key, int scancode, int action, i
 	else if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
 	{
 		// direcional
-		std::cout << "valinhagod" << std::endl;
 		if (light[1])
 		{
 			light[1] = false;

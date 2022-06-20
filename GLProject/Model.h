@@ -17,9 +17,9 @@
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "opengl32.lib")
 
-
-
-class Model
+namespace biblioteca 
+{
+	class Model
 {
 	public:
 		float position;
@@ -54,3 +54,4 @@ class Model
 		ReadFiles(filename);
 	}
 
+}

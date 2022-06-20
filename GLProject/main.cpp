@@ -17,6 +17,8 @@
 #define HEIGHT 600
 #define WIDTH 800
 
+using namespace biblioteca;
+
 
 void Init(void) {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
