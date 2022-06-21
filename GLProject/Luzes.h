@@ -8,6 +8,8 @@ using namespace biblioteca;
 
 namespace lights {
 	bool light[] = { true, true, true, true };
+	bool deform = false;
+	GLfloat shaderDeform = 1;
 	void Lights(Model* model);
 	void OnkeyPress(GLFWwindow* window, int key, int scancode, int action, int mods);
 	 glm::vec3 off = glm::vec3(0.0, 0.0, 0.0);
@@ -92,7 +94,15 @@ void lights::Lights(Model* model) {
 		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "spotLight.specular"), 1, glm::value_ptr(glm::vec3(0.0, 0.0, 0.0)));
 		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "spotLight.direction"), 1, glm::value_ptr(glm::vec3(0.0, 0.0, 0.0)));
 	}
-		
+
+	if (deform)
+	{
+		glProgramUniform1i(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "deform"), 1);
+	}
+	else
+	{
+		glProgramUniform1i(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "deform"), 0);
+	}
 
 
 	//Propriedades do material
@@ -146,6 +156,11 @@ void lights::OnkeyPress(GLFWwindow* window, int key, int scancode, int action, i
 			light[3] = false;
 		}
 		else light[3] = true;
+	}
+
+	else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	{
+		deform = !deform;
 	}
 
 }

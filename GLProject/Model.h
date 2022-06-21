@@ -29,7 +29,6 @@ namespace biblioteca
 		GLuint sendModelData();
 		glm::vec3 ka, kd, ks;
 		GLfloat ns;
-
 	private:
 		//VAO
 		GLuint vertexArrayObject;
@@ -37,7 +36,7 @@ namespace biblioteca
 		GLuint shaderProgram;
 		GLuint num_vertices;
 
-		
+		int deformAngle;
 		char materialsFilename[50];
 		std::vector < glm::vec3 > vertices;
 		std::vector < glm::vec2 > uvs;
@@ -51,6 +50,7 @@ namespace biblioteca
 };
 	inline Model::Model(const char* filename) {
 		model = glm::mat4(1.0f);
+		deformAngle = 0;
 		ReadFiles(filename);
 	}
 

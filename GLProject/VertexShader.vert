@@ -6,6 +6,8 @@ uniform mat4 View;
 uniform mat4 Projection;
 uniform mat4 ModelView;
 uniform mat3 NormalMatrix;
+uniform int deform;
+uniform int deformAngle;
 
 layout (location = 0) in vec3 vPosition;
 layout (location = 1) in vec2 uvs;
@@ -31,5 +33,15 @@ void main()
 	vNormalEyeSpace = normalize(NormalMatrix * vNormal);
 
 	// Posição final do vértice (em coordenadas de clip)
-	gl_Position = (Projection * View * Model) * vec4(vPosition,1.0f);
+	if (deform == 1) {
+		vec3 deformPos = vPosition;
+		deformPos.x += cos(deformPos.y + radians(deformAngle));
+		deformPos.z += cos(deformPos.y + radians(deformAngle));
+		gl_Position = (Projection * View * Model) * vec4(deformPos,1.0f);
+	}
+	else {
+		gl_Position = (Projection * View * Model) * vec4(vPosition,1.0f);
+	}
+	
+	
 }

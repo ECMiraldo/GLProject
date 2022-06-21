@@ -4,6 +4,8 @@ uniform mat4 Model;
 uniform mat4 View;
 uniform mat4 ModelView;		// View * Model
 uniform sampler2D textura;
+uniform int deform;
+uniform int deformAngle;
 
 // Estrutura da fonte de luz ambiente global
 struct AmbientLight {

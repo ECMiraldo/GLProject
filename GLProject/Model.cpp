@@ -21,6 +21,10 @@ namespace biblioteca {
 		tempmodel = rotate(tempmodel, radians(orientation.y), vec3(0, 1, 0)); //yaw
 		tempmodel = rotate(tempmodel, radians(orientation.z), vec3(0, 0, 1)); //roll
 
+		//angle to deform
+		if (deformAngle < 360) deformAngle += 1;
+		if (deformAngle == 360) deformAngle = 0;
+
 		GLint modelId = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "Model");
 		glProgramUniformMatrix4fv(shaderProgram, modelId, 1, GL_FALSE, glm::value_ptr(tempmodel));
 
@@ -36,6 +40,9 @@ namespace biblioteca {
 		glProgramUniformMatrix4fv(shaderProgram, viewID, 1, GL_FALSE, glm::value_ptr(Camera::GetInstance()->view));
 		GLint projectionId = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "Projection");
 		glProgramUniformMatrix4fv(shaderProgram, projectionId, 1, GL_FALSE, glm::value_ptr(Camera::GetInstance()->projection));
+
+		GLint angleId = glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "deformAngle");
+		glProgramUniform1i(shaderProgram, angleId, deformAngle);
 
 
 		glBindVertexArray(vertexArrayObject);
@@ -216,7 +223,7 @@ namespace biblioteca {
 		glGenVertexArrays(1, &vertexArrayObject);
 		glBindVertexArray(vertexArrayObject);
 
-		glGenBuffers(4, bufferArrayObjects);
+		glGenBuffers(3, bufferArrayObjects);
 
 		// Send datas to buffers
 		for (int i = 0; i < 3; i++) {
@@ -266,5 +273,4 @@ namespace biblioteca {
 
 		return shaderProgram;
 	}
-
 }
