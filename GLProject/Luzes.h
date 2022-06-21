@@ -25,21 +25,22 @@ void lights::Lights(Model* model) {
 	//GLint shaderProgra;
 	//glGetIntegerv(GL_CURRENT_PROGRAM, &shaderProgra);
 
-	// Fonte de luz ambiente global
+	// Ambiente global
 	if (light[0])
 	{
-		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "ambientLight.ambient"), 1, glm::value_ptr(glm::vec3(0.1, 0.1, 0.1)));
+		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "ambientLight.ambient"), 1, glm::value_ptr(glm::vec3(1.8, 1.8, 1.8)));
 	}
 	else
 	{
 		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "ambientLight.ambient"), 1, glm::value_ptr(glm::vec3(0.0, 0.0, 0.0)));
 	}
 
+	// direcional (configurado para mostrar por cima)
 	if (light[1])
 	{
-		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "directionalLight.direction"), 1, glm::value_ptr(glm::vec3(1.0, 0.0, 0.0)));
-		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "directionalLight.ambient"), 1, glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
-		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "directionalLight.diffuse"), 1, glm::value_ptr(glm::vec3(1.0, 1.0, 1.0)));
+		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "directionalLight.direction"), 1, glm::value_ptr(glm::vec3(0.0, 2.0, 0.0)));
+		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "directionalLight.ambient"), 1, glm::value_ptr(glm::vec3(0.6, 0.6, 0.6)));
+		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "directionalLight.diffuse"), 1, glm::value_ptr(glm::vec3(2.0, 2.0, 2.0)));
 		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "directionalLight.specular"), 1, glm::value_ptr(glm::vec3(1.0, 1.0, 1.0)));
 	}
 	else 
@@ -50,7 +51,7 @@ void lights::Lights(Model* model) {
 		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "directionalLight.specular"), 1, glm::value_ptr(glm::vec3(0.0, 0.0, 0.0)));
 	}
 
-	// Fonte de luz direcional
+	//point light
 	if (light[2])
 	{
 		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "pointLight.position"), 1, glm::value_ptr(glm::vec3(0.0, 0.0, 5.0)));
@@ -72,13 +73,13 @@ void lights::Lights(Model* model) {
 		glProgramUniform1f(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "pointLight.quadratic"), 0.02f);
 
 	}
-	//
+	//SpotLight
 	if (light[3])
 	{
-		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "spotLight.position"), 1, glm::value_ptr(glm::vec3(1.0, 1.0, 1.0)));
-		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "spotLight.ambient"), 1, glm::value_ptr(glm::vec3(1.0, 1.0, 1.0)));
-		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "spotLight.diffuse"), 1, glm::value_ptr(glm::vec3(5.0, 10.0, 10.0)));
-		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "spotLight.specular"), 1, glm::value_ptr(glm::vec3(5.0, 10.0, 10.0)));
+		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "spotLight.position"), 1, glm::value_ptr(glm::vec3(0.8, 0.8, 0.8)));
+		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "spotLight.ambient"), 1, glm::value_ptr(glm::vec3(2.0, 2.0, 2.0)));
+		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "spotLight.diffuse"), 1, glm::value_ptr(glm::vec3(10.0, 10.0, 10.0)));
+		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "spotLight.specular"), 1, glm::value_ptr(glm::vec3(10.0, 10.0, 10.0)));
 		glProgramUniform3fv(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "spotLight.direction"), 1, glm::value_ptr(glm::vec3(0.0, 2.0, 0.0)));
 
 		glProgramUniform1f(shaderProgram, glGetProgramResourceLocation(shaderProgram, GL_UNIFORM, "spotLight.angle"), 0.00005f);
@@ -116,7 +117,7 @@ void lights::Lights(Model* model) {
 // funcao da tecla pressionada
 void lights::OnkeyPress(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-
+	//ambiente 1
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
 	{
 		if (light[0])
@@ -124,13 +125,12 @@ void lights::OnkeyPress(GLFWwindow* window, int key, int scancode, int action, i
 			light[0] = false;
 		}
 		else light[0] = true;
-		// luz ambiente
+	
 
 	}
-
+	// direcional 2
 	else if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
 	{
-		// direcional
 		if (light[1])
 		{
 			light[1] = false;
@@ -138,9 +138,9 @@ void lights::OnkeyPress(GLFWwindow* window, int key, int scancode, int action, i
 		else light[1] = true;
 	}
 
+	// pointlight 3
 	else if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
 	{
-		// luz pointlight
 		if (light[2])
 		{
 			light[2] = false;
@@ -148,9 +148,9 @@ void lights::OnkeyPress(GLFWwindow* window, int key, int scancode, int action, i
 		else light[2] = true;
 	}
 
+	// spotlight 4
 	else if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
 	{
-		// spotlight
 		if (light[3])
 		{
 			light[3] = false;
@@ -158,9 +158,9 @@ void lights::OnkeyPress(GLFWwindow* window, int key, int scancode, int action, i
 		else light[3] = true;
 	}
 
+	//Deform D 
 	else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
 		deform = !deform;
 	}
-
 }
